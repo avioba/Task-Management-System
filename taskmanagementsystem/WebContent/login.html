@@ -1,0 +1,57 @@
+<!-- this is the login HTML -->
+<div>
+<table>
+<tr>
+<td>
+	<div>
+		
+		<div style="display: none" id="showSignUp">
+			<table>
+				<tr>
+					<td>
+						User name :
+					</td>
+					<td>
+						<input ng-model="chooseUsername">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						password :
+					</td>
+					<td>
+						<input ng-model="choosePassword">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<button ng-click="newUser()">Sign Up</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div style="display: none" id="welcomeToTMS">
+			<p>Welcome to TMS! you are now user and u can login</p>
+			<p>Your User Name is :<br><b>{{newU.username}}</b><br>and your Password is :<br><b>{{newU.password}}</b></p>
+			<button ng-click="confirm()">confirm</button>	
+		</div>
+		
+		<table class="login">
+			<tr>
+				<td>User Name:</td>
+				<td><input title="User Name" ng-model="username" required></td>
+			</tr>
+			<tr>
+				<td>Password:</td>
+				<td><input title="Password" ng-model="password" required></td>
+			</tr>
+			<tr>
+				<td><button ng-click="getuser()">Login</button></td>
+			</tr>
+		</table>
+	</div>
+</td>
+</tr>	
+</table>
+</div>

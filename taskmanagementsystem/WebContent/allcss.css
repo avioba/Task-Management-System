@@ -1,0 +1,59 @@
+/**
+ * Use this CSS file to manage the design of all the screens .
+ */
+ body{
+	border-style:solid;
+	text-align: center;
+	font-family:ariel;
+	font-size:medium;
+	max-width:1024px;
+	background-image: url("images/empty-bulletin-board.jpg");
+	background-repeat: inherit;
+}
+ul {
+    margin: 0 auto;
+    text-align: center;
+    columns: 2;
+}
+
+li {
+    display: inline-block;
+    vertical-align: top;
+    margin: 10px;
+    background-color:yellow;
+    box-shadow: 5px 10px rgba(0, 0, 0, 0.5);
+}
+i{
+	align-content: center;
+	transform: rotate(310deg);
+}
+input{
+  background-color : lightgray; 
+}
+
+.maintable{
+	width: 1024px;
+}
+.title{
+	background-color:yellow;
+	text-align: center;
+}
+.footer{
+	background-color: yellow;
+}
+.login{
+	margin: 250px;
+	background-color: blue;
+}
+.logout{
+	background-color: red;
+}
+.newUser{
+	background-color: blue;
+}
+.taskPage{
+	margin: 100px;
+}
+.tasksTable{
+	background-color: lightblue;
+}

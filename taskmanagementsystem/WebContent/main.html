@@ -1,0 +1,373 @@
+<!-- this is the main screen HTML :
+ - the main HTML screen .
+ - all the JavaScrit functions .
+ -->
+ <!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta charset="windows-1255">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> 
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>	
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link href="allcss.css" rel ="stylesheet">
+		<script>
+			var userid;
+			var app = angular.module("myApp", ["ngRoute"]);
+			app.config(function($routeProvider){
+				$routeProvider.when("/",{
+					templateUrl : "login.html",
+					controller : "loginCtrl"
+				}).when("/task",{
+					templateUrl : "taskmanagement.html",
+					controller : "taskCtrl"
+				}).when("/todo",{
+					templateUrl : "todo.html",
+					controller : "loginCtrl"
+				}).when("/inprogress",{
+					templateUrl : "inprogress.html",
+					controller : "loginCtrl"
+				}).when("/done",{
+					templateUrl : "done.html",
+					controller : "loginCtrl"
+				});
+			});
+			
+			app.controller("loginCtrl", function ($scope,$http,$location){
+				$(".newUser").show();
+				$(".logout").hide();
+				$(".hidemenu").hide();
+				$scope.getuser = function(){
+					$http.get("http://localhost/taskmanagementsystem/rest/user/getUser?username="+$scope.username+"&password="+$scope.password)
+					.then(function(response){
+						var user = response.data;
+						userid = user.id;
+						console.log("login page userid = "+userid);
+						if(user!=null){
+							$location.path('/task');
+						}
+						
+					});
+				}
+				$scope.openUser = function() {
+					$('#showSignUp').dialog({
+				        autoOpen: true,
+				        title: 'Sign Up'
+				    });
+					
+					}
+				
+				
+				$scope.newUser = function() {
+					$http.get("http://localhost/taskmanagementsystem/rest/user/newUser?username="+$scope.chooseUsername+"&password="+$scope.choosePassword)
+					.then(function(response){
+						$scope.newU = response.data;
+					});	
+						$scope.chooseUsername = " ";
+						$scope.choosePassword = " ";
+						
+						$('#showSignUp').dialog('destroy');
+						
+						$('#welcomeToTMS').dialog({
+							autoOpen: true,
+							title: 'Welcome!'
+						});	
+				
+				}
+			
+				$scope.confirm = function() {
+					$('#welcomeToTMS').dialog('destroy');
+				}
+				
+				$scope.logout = function () {
+					if(confirm("are u sure u want to log out?")==true){
+						$location.path("/");
+					}
+				}
+				
+				$scope.todo = function () {
+					$(".newUser").hide();
+					$(".logout").show();
+					$(".hidemenu").show();
+					$location.path('/todo');
+					$http.get("http://localhost/taskmanagementsystem/rest/task/getTasksToDo?user="+userid)
+					.then(function(response){
+						$scope.tasksToDo = response.data;
+					});	
+					$scope.openEdit = function(id) {
+						$("#editButton").show();
+						$("#createButton").hide();
+						
+						var index = getSelectedIndex(id);
+						console.log(index);
+						var task = $scope.myTaskList[index];
+						$scope.name = task.name;
+						$scope.date = task.date;
+						$scope.description = task.description;
+						$scope.enddate = task.enddate;
+						
+						$('#showForm').dialog({
+					        autoOpen: true,
+					        title: 'Edit Task'
+					    });
+						
+						$scope.editTask = function() {
+							$http.get("http://localhost/taskmanagementsystem/rest/task/updateTask?id="+id+"&name="+$scope.name+"&user="+userid+"&date="+$scope.date+"&description="+$scope.description+"&enddate="+$scope.enddate)
+						    .then(function(response){
+						    	var response = response.data;
+						    	if(response.msg=="ok"){
+						    		$scope.myTaskList[index].name = $scope.name;
+									$scope.myTaskList[index].user = $scope.user;
+									$scope.myTaskList[index].date = $scope.date;
+									$scope.myTaskList[index].description = $scope.description;
+									$scope.myTaskList[index].enddate = $scope.enddate;
+								 }else{
+									 alert("The row was not updated!");
+								 }
+						    	
+						    });
+							
+							$('#showForm').dialog('destroy');
+							
+				}
+					}
+			
+				}
+				
+				$scope.inprogress = function () {
+					$(".newUser").hide();
+					$(".logout").show();
+					$(".hidemenu").show();
+					$location.path('/inprogress');
+					$http.get("http://localhost/taskmanagementsystem/rest/task/getTasksInProgress?user="+userid)
+					.then(function(response){
+						$scope.tasksInProgress = response.data;
+					});	
+					$scope.openEdit = function(id) {
+						$("#editButton").show();
+						$("#createButton").hide();
+						
+						var index = getSelectedIndex(id);
+						console.log(index);
+						var task = $scope.myTaskList[index];
+						$scope.name = task.name;
+						$scope.date = task.date;
+						$scope.description = task.description;
+						$scope.enddate = task.enddate;
+						
+						$('#showForm').dialog({
+					        autoOpen: true,
+					        title: 'Edit Task'
+					    });
+						
+						$scope.editTask = function() {
+							$http.get("http://localhost/taskmanagementsystem/rest/task/updateTask?id="+id+"&name="+$scope.name+"&user="+userid+"&date="+$scope.date+"&description="+$scope.description+"&enddate="+$scope.enddate)
+						    .then(function(response){
+						    	var response = response.data;
+						    	if(response.msg=="ok"){
+						    		$scope.myTaskList[index].name = $scope.name;
+									$scope.myTaskList[index].user = $scope.user;
+									$scope.myTaskList[index].date = $scope.date;
+									$scope.myTaskList[index].description = $scope.description;
+									$scope.myTaskList[index].enddate = $scope.enddate;
+								 }else{
+									 alert("The row was not updated!");
+								 }
+						    	
+						    });
+							
+							$('#showForm').dialog('destroy');
+							
+				}
+					}
+			
+			}
+				$scope.done = function () {
+					$(".newUser").hide();
+					$(".logout").show();
+					$(".hidemenu").show();
+					$location.path('/done');
+					$http.get("http://localhost/taskmanagementsystem/rest/task/getDoneTasks?user="+userid)
+					.then(function(response){
+						$scope.doneTasks = response.data;
+					});	
+					$scope.openEdit = function(id) {
+						$("#editButton").show();
+						$("#createButton").hide();
+						
+						var index = getSelectedIndex(id);
+						console.log(index);
+						var task = $scope.myTaskList[index];
+						$scope.name = task.name;
+						$scope.date = task.date;
+						$scope.description = task.description;
+						$scope.enddate = task.enddate;
+						
+						$('#showForm').dialog({
+					        autoOpen: true,
+					        title: 'Edit Task'
+					    });
+						
+						$scope.editTask = function() {
+							$http.get("http://localhost/taskmanagementsystem/rest/task/updateTask?id="+id+"&name="+$scope.name+"&user="+userid+"&date="+$scope.date+"&description="+$scope.description+"&enddate="+$scope.enddate)
+						    .then(function(response){
+						    	var response = response.data;
+						    	if(response.msg=="ok"){
+						    		$scope.myTaskList[index].name = $scope.name;
+									$scope.myTaskList[index].user = $scope.user;
+									$scope.myTaskList[index].date = $scope.date;
+									$scope.myTaskList[index].description = $scope.description;
+									$scope.myTaskList[index].enddate = $scope.enddate;
+								 }else{
+									 alert("The row was not updated!");
+								 }
+						    	
+						    });
+							
+							$('#showForm').dialog('destroy');
+							
+				}
+					}
+			
+				}
+			});
+			
+			app.controller("taskCtrl", function ($scope,$http){
+				$(".logout").show();
+				$(".newUser").hide();
+				$(".hidemenu").show();
+				console.log("task page userid = "+userid);
+				$http.get("http://localhost/taskmanagementsystem/rest/task/getTaskByUser?user="+userid)
+				.then(function(response){
+					$scope.myTaskList = response.data;
+					console.log($scope.myTaskList);
+				});
+				
+				$scope.getTaskByName = function(){
+					$http.get("http://localhost/taskmanagementsystem/rest/task/getTaskByName?name="+$scope.name)
+					.then(function(response){
+						$scope.taskByName = response.data;
+						console.log($scope.taskByName);
+					});
+				}
+				
+				$scope.add = function() {
+					$("#createButton").show();
+					$("#editButton").hide();
+					
+					$('#showForm').dialog({
+				        autoOpen: true,
+				        title: 'Add Task'
+				    });
+				}
+				
+				$scope.createTask = function() {
+					$http.get("http://localhost/taskmanagementsystem/rest/task/createTask?name="+$scope.name+"&user="+userid+"&date="+$('#date').val()+"&description="+$scope.description+"&enddate="+$('#enddate').val())
+				    .then(function(response) {
+				    	$scope.newTask = response.data;
+				    	console.log($scope.newTask);
+				    	console.log($scope.newTask.date);
+				    	 $http.get("http://localhost/taskmanagementsystem/rest/task/getTaskByUser?user="+userid)
+						    .then(function(response) {
+						    	$scope.myTaskList = response.data;
+						    	
+						    });
+				    	 
+			    	 	$scope.name = " ";
+						$scope.description = " ";
+							
+					});
+				    
+				    $('#showForm').dialog('destroy');
+				}
+				
+				$scope.openEdit = function(id) {
+					$("#editButton").show();
+					$("#createButton").hide();
+					
+					var index = getSelectedIndex(id);
+					console.log(index);
+					var task = $scope.myTaskList[index];
+					$scope.name = task.name;
+					$scope.date = task.date;
+					$scope.description = task.description;
+					$scope.enddate = task.enddate;
+					
+					$('#showForm').dialog({
+				        autoOpen: true,
+				        title: 'Edit Task'
+				    });
+					
+					$scope.editTask = function() {
+						$http.get("http://localhost/taskmanagementsystem/rest/task/updateTask?id="+id+"&name="+$scope.name+"&user="+userid+"&date="+$scope.date+"&description="+$scope.description+"&enddate="+$scope.enddate)
+					    .then(function(response){
+					    	var response = response.data;
+					    	if(response.msg=="ok"){
+					    		$scope.myTaskList[index].name = $scope.name;
+								$scope.myTaskList[index].user = $scope.user;
+								$scope.myTaskList[index].date = $scope.date;
+								$scope.myTaskList[index].description = $scope.description;
+								$scope.myTaskList[index].enddate = $scope.enddate;
+							 }else{
+								 alert("The row was not updated!");
+							 }
+					    	
+					    });
+						
+						$('#showForm').dialog('destroy');
+						
+					}
+					
+					function getSelectedIndex(id){
+						for(var i=0; i<$scope.myTaskList.length; i++)
+							if($scope.myTaskList[i].id==id)
+								return i;
+							return -1;	
+					};
+				}
+				
+				$scope.deleteTask = function(id){
+					 
+					 var confirm1 =confirm('Are u sure ?');
+					 if(confirm1 === true ){
+						 $http.get("rest/task/deleteTask?id="+id)
+						    .then(function(response) {
+						    console.log(response.data);
+						    	var response = response.data;
+						    	if(response.msg=="ok"){
+									 $("#tr-"+id).remove();
+								 }
+						    }); 
+						 $http.get("http://localhost/taskmanagementsystem/rest/task/getTaskByUser?user="+userid)
+							.then(function(response){
+								$scope.myTaskList = response.data;
+								console.log($scope.myTaskList);
+							});
+					 }
+					
+				} 
+			});
+			
+		</script>
+	
+	
+</head>
+<body ng-controller="loginCtrl">
+	<div>
+		<table class="maintable">
+			<tr><td class="logout"><button ng-click="logout()">Logout</button></td>
+			<td class="title"><h1><strong>Task Management System</strong></h1></td>
+			<td class="newUser"><button ng-click="openUser()">New User</button></td></tr>
+			<tr class="hidemenu"><td><button ng-click="todo()">To Do</button></td><td><button ng-click="inprogress()">In Progress</button></td><td><button ng-click="done()">Done</button></td></tr>
+			<tr><td colspan="3"><div ng-view></div></td></tr>
+			<tr><td colspan="3" class="footer"><strong>Copyright <span class="glyphicon glyphicon-copyright-mark"></span> Avi Wuve, Inc. All Right Reserved</strong></td></tr>
+		</table>
+	</div>	
+</body>
+</html>

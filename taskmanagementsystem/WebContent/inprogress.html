@@ -1,0 +1,60 @@
+<!-- this is the in progress tasks HTML -->
+<div>
+<h3 style="background-color: white">Tasks In Progress</h3>
+<p style="background-color: white"><strong>Search : </strong><input ng-model="search"><button ng-click="getTaskByName()">Search</button></p>
+	<div style="display: none" id="showForm">
+		<table>
+			<tr>
+				<td>
+					Name :
+				</td>
+				<td>
+					<input ng-model="name">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Date :
+				</td>
+				<td>
+					<input type="date" id="date" ng-model="date">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Description :
+				</td>
+				<td>
+					<input ng-model="description">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					End Date :
+				</td>
+				<td>
+					<input type="date" id="enddate" ng-model="enddate">
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<button ng-click="createTask()" id="createButton">Create</button>
+					<button ng-click="editTask()" id="editButton">Edit</button>
+				</td>
+			</tr>
+		</table>	
+	</div>
+	<ul>
+    <li id="{{task.id}}" ng-repeat="task in tasksInProgress | filter:search">
+        <div>
+        	<i class="fa fa-thumb-tack" style="font-size:48px;color:red"></i>
+            <h1>Name: {{task.name}}</h1>
+            <p>Date: {{task.date}}</p>
+            <p>Description: {{task.description}}</p>
+            <p>End Date: {{task.enddate}}</p>
+            <button ng-click="openEdit(task.id)">Edit</button><br>
+            <button ng-click="deleteTask(task.id)">Delete</button>
+        </div>
+    </li>
+</ul>
+</div>

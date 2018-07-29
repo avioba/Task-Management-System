@@ -1,0 +1,79 @@
+<!-- this is the all tsks HTML -->
+<div class="taskPage">
+<h3 style="background-color: white">All Tasks</h3>
+	<p style="background-color: white"><strong>Search : </strong><input ng-model="search"><button ng-click="getTaskByName()">Search</button></p>
+	<button ng-click="add()">Add Task</button>
+	<div style="display: none" id="showForm">
+		<table>
+			<tr>
+				<td>
+					Name :
+				</td>
+				<td>
+					<input ng-model="name">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Date :
+				</td>
+				<td>
+					<input type="date" id="date" ng-model="date">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Description :
+				</td>
+				<td>
+					<input ng-model="description">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					End Date :
+				</td>
+				<td>
+					<input type="date" id="enddate" ng-model="enddate">
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<button ng-click="createTask()" id="createButton">Create</button>
+					<button ng-click="editTask()" id="editButton">Edit</button>
+				</td>
+			</tr>
+		</table>	
+	</div>
+	<!-- <table border="1" class="tasksTable">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Date</th>
+				<th>Description</th>
+				<th>End Date</th>
+				<th>Edit/Delete</th>
+			</tr>
+		</thead>	
+		<tr id="tr-{{task.id}}" ng-repeat="task in myTaskList">
+			<td>{{task.name}}</td>
+			<td>{{task.date}}</td>
+			<td>{{task.description}}</td>
+			<td>{{task.enddate}}</td>
+			<td><button ng-click="openEdit(task.id)">Edit</button><button ng-click="deleteTask(task.id)">Delete</button></td>
+		</tr>
+	</table> -->
+	<ul>
+    <li id="{{task.id}}" ng-repeat="task in myTaskList | filter:search">
+        <div>
+        	<i class="fa fa-thumb-tack" style="font-size:48px;color:red"></i>
+            <h1>Name: {{task.name}}</h1>
+            <p>Date: {{task.date}}</p>
+            <p>Description: {{task.description}}</p>
+            <p>End Date: {{task.enddate}}</p>
+            <button ng-click="openEdit(task.id)">Edit</button><br>
+            <button ng-click="deleteTask(task.id)">Delete</button>
+        </div>
+    </li>
+</ul>
+</div>
